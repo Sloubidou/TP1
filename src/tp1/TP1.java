@@ -7,128 +7,20 @@ package tp1;
 
 import java.io.*;
 import java.lang.Process;
+import javax.swing.JTree;
+import javax.swing.JFrame;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-public class TP1 extends Application {
-    
-       @Override
-    public void start(Stage primaryStage) {
-        
-        Group group = new Group();
-        VBox vbox = new VBox();
-       Image myImage = new Image("file:usr/bin/monGraphe.png");
-      
-         ImageView iv1 = new ImageView();
-        iv1.setImage(myImage);
-       //  iv1.setFitWidth(100);
-         iv1.setPreserveRatio(true);
-        iv1.setSmooth(true);
-        iv1.setCache(true);
+public class TP1 {
 
-        vbox.getChildren().add(new Text("Code Java pur"));
-        vbox.getChildren().add(iv1);
-        group.getChildren().add(vbox);
-        primaryStage.setScene(new Scene(group));
-        
-         primaryStage.setWidth(1024);
-        primaryStage.setHeight(968);
-        primaryStage.setTitle("TP1");
-        primaryStage.sizeToScene();
-        primaryStage.show();
-    }
-    
-    public static void processTraceroute(String url)
-    {
-        String line = "";
-        
-         try {
-            //create the process
-            ProcessBuilder pBuilder = new ProcessBuilder("traceroute", url);
-            pBuilder.redirectErrorStream(true);//redirect the error stream
-            Process myProcess = pBuilder.start(); //run the process
-            //Get the output
-            BufferedReader b = new BufferedReader(new InputStreamReader(myProcess.getInputStream()));
-            //then print it !
-            while ((line = b.readLine()) != null) {
-                System.out.println(line);
-                //Create a pattern for IPV4
-               // String IPADDRESS_PATTERN = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-                //Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
-                //Match the pattern and the string containing the IP
-               // Matcher matcher = pattern.matcher(line);
-                //if (matcher.find()) {//If a match is find
-                    //Register into the IP tab
-                    //IPtab.add(matcher.group());
-                }
-            }
-            catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void processGraphviz()
-    {
-        String line = "";
-        String fichier = "./usr/bin/monFichier.dot";
-        String chaine = "graph { \na;\nb;\nc;\nc--k;\na--e;\ne--f\na--y\nh--e\n}";
-         
-        try {
-            //create the process
-            ProcessBuilder pBuilder = new ProcessBuilder("dot", "-Tpng", "monFichier.dot", "-o", "monGraphe.png");
-            pBuilder.directory(new File("./usr/bin"));
-            pBuilder.redirectErrorStream(true);//redirect the error stream
-            
-            ecritureGraphe(fichier, chaine);
-            Process myProcess = pBuilder.start(); //run the process
-            
-            //Get the output
-            BufferedReader b = new BufferedReader(new InputStreamReader(myProcess.getInputStream()));
-            //then print it !
-            while ((line = b.readLine()) != null) {
-                System.out.println(line);
-                }
-             
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void ecritureGraphe(String fichier, String chaine){
-       
-        //création ou ajout dans le fichier texte
-		try {
-			FileWriter fw = new FileWriter (fichier);
-			BufferedWriter bw = new BufferedWriter (fw);
-			PrintWriter fichierSortie = new PrintWriter (bw); 
-				fichierSortie.println (chaine); 
-			fichierSortie.close();
-			System.out.println("Le fichier " + fichier + " a été créé!"); 
-		}
-		catch (Exception e){
-			System.out.println(e.toString());
-		}		
-    }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       
-       processTraceroute("fr.wikipedia.org");
-       processGraphviz();
-       launch(args);
-       
-    /*    JFrame mainFrame = new JFrame();
+
+        JFrame mainFrame = new JFrame();
         IpTree testTree = new IpTree();
         mainFrame.add(testTree.getTree());
         mainFrame.setSize(800, 600);
@@ -148,7 +40,7 @@ public class TP1 extends Application {
                 + "10    90 ms   158 ms    83 ms  chloe.wikimedia.org [212.85.150.132]\n"
                 + "Itinéraire déterminé.\n"
                 + "";
-        String line = "oucou";
+        String line = "";
         
         ArrayList<String> IPtab = new ArrayList<String>();
         
@@ -177,6 +69,5 @@ public class TP1 extends Application {
         }
         System.out.println(IPtab);
         System.out.println("TEST");
-            */
     }
 }
