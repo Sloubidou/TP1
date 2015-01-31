@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.util.regex.*;
 
 public class TP1 extends Application {
 
@@ -33,11 +34,11 @@ public class TP1 extends Application {
 
 ///////********( A ENLEVER !!!) *****/////////////////
         //j'effectue plusieurs construction pour tester l'ajout de branches
-        // processTraceroute(myTree,"campus.ece.fr");
+        //processTraceroute(myTree,"campus.ece.fr");
         //processTraceroute(myTree,"www.facebook.com");
         String feedback = "";
 
- ////******EXECUTER A CHAQUE NOUVEL AJOUT : *************//////
+        ////******EXECUTER A CHAQUE NOUVEL AJOUT : *************//////
         //Feedback stock le statut de la construction des branches
         if (processTraceroute(myTree, "fr.wikipedia.org")) //construction
         //récup le feedback => voir la classe Tree
@@ -52,7 +53,7 @@ public class TP1 extends Application {
 
        ///====> Rechargement de l'image affiché et du text feedback
         /// ==> + vider le field contenant l'adresse tracé ?
- ////*****FIN ******/////
+        ////*****FIN ******/////
         //Construit les éléments de la fenêtre FX
         Group group = new Group();
         VBox vbox = new VBox();
@@ -83,7 +84,7 @@ public class TP1 extends Application {
     public static boolean processTraceroute(Tree myTree, String url) {
         String line = "";
         String previous = myTree.getRoot();
-        String[] parts;
+        String ip;
 
         try {
             //create the process
@@ -94,16 +95,24 @@ public class TP1 extends Application {
             BufferedReader b = new BufferedReader(new InputStreamReader(myProcess.getInputStream()));
             //then print it !
             while ((line = b.readLine()) != null) {
-
-                if (!line.startsWith("traceroute")) {
-                    parts = line.split("  ");
-                    if (!parts[1].startsWith("*")) {
-                        if (myTree.add(previous, parts[1])) {
-                            previous = parts[1];
+                System.out.println(line);
+                //Create a pattern for IPV4
+                String IPADDRESS_PATTERN = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+                Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+                //Match the pattern and the string containing the IP
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {//If a match is find
+                    //Register into the IP variable
+                    if (!line.startsWith("traceroute"))
+                    {
+                        ip = matcher.group();
+                    if (myTree.add(previous, ip)) {
+                            previous = ip;
                         }
-                    } else {
-                        return false;
                     }
+                }
+                else {
+                    return false;
                 }
             }
         } catch (Exception e) {
@@ -117,7 +126,6 @@ public class TP1 extends Application {
     ///Il faut également passé l'implémentation du fichier .dot (chaine)
     public static void processGraphviz(String chaine, String directory, String input, String output) {
         String line = "";
-
         try {
             //create the process
             ProcessBuilder pBuilder = new ProcessBuilder("dot", "-Tpng", input, "-o", output);
