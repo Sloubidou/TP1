@@ -1,0 +1,10 @@
+graph { 
+a;
+b;
+c;
+c--k;
+a--e;
+e--f
+a--y
+h--e
+}
