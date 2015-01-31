@@ -1,10 +1,11 @@
 digraph G {
-"Start" -> "192.168.0.254 (192.168.0.254)"; 
-"192.168.0.254 (192.168.0.254)" -> "82.240.55.254 (82.240.55.254)"; 
-"82.240.55.254 (82.240.55.254)" -> "213.228.24.254 (213.228.24.254)"; 
-"213.228.24.254 (213.228.24.254)" -> "bzn-crs16-1-be1013.intf.routers.proxad.net (212.27.57.97)"; 
-"bzn-crs16-1-be1013.intf.routers.proxad.net (212.27.57.97)" -> "p11-crs16-1-be1000.intf.routers.proxad.net (78.254.249.1)"; 
-"p11-crs16-1-be1000.intf.routers.proxad.net (78.254.249.1)" -> "bzn-9k-5-be2001.intf.routers.proxad.net (194.149.162.22)"; 
-"bzn-9k-5-be2001.intf.routers.proxad.net (194.149.162.22)" -> "londres-6k-1-po104.intf.routers.proxad.net (194.149.161.238)"; 
-"londres-6k-1-po104.intf.routers.proxad.net (194.149.161.238)" -> "amsterdam-6k-1-po100.intf.routers.proxad.net (212.27.56.42)"; 
+"Start" -> "livebox.home (192.168.1.1)"; 
+"livebox.home (192.168.1.1)" -> "80.10.123.213 (80.10.123.213)"; 
+"80.10.123.213 (80.10.123.213)" -> "10.123.89.138 (10.123.89.138)"; 
+"10.123.89.138 (10.123.89.138)" -> "ae41-0.niaub201.Aubervilliers.francetelecom.net (193.252.98.161)"; 
+"ae41-0.niaub201.Aubervilliers.francetelecom.net (193.252.98.161)" -> "81.253.184.90 (81.253.184.90)"; 
+"81.253.184.90 (81.253.184.90)" -> "tengige2-7-0-11.pastr1.Paris.opentransit.net (193.251.133.97)"; 
+"tengige2-7-0-11.pastr1.Paris.opentransit.net (193.251.133.97)" -> "prs-bb3-link.telia.net (213.155.134.222)"; 
+"prs-bb3-link.telia.net (213.155.134.222)" -> "prs-bb3-link.telia.net (213.155.134.220)"; 
+"prs-bb3-link.telia.net (213.155.134.220)" -> "adm-b5-link.telia.net (213.155.136.249)"; 
 }
