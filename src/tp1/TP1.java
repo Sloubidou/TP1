@@ -10,6 +10,8 @@ import java.lang.Process;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.*;
 import javafx.scene.image.ImageView;
@@ -17,66 +19,82 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.regex.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 public class TP1 extends Application {
+
+    //Les noms de dossier et fichier
+    private String directory = "./usr/bin";
+    private String input = "monFichier.dot";
+    private String output = "monGraphe.png";
+    private String feedback = "";
+    private Tree myTree;
+    private String url = "";
+    private TextField urlField = new TextField();
+    //Construit les éléments de la fenêtre FX
+    private Group group = new Group();
+    private VBox vbox = new VBox();
+    private ImageView iv1 = new ImageView();
 
     ////LANCEMENT DE LA FENETRE GRAPHIQUE
     @Override
     public void start(Stage primaryStage) {
-
-        //Les noms de dossier et fichier
-        String directory = "./usr/bin";
-        String input = "monFichier.dot";
-        String output = "monGraphe.png";
-
         //Initialisation de l'arbre
-        Tree myTree = new Tree("Start"); //on passe la racine en paramètre
-
-///////********( A ENLEVER !!!) *****/////////////////
+        myTree = new Tree("Start"); //on passe la racine en paramètre
         //j'effectue plusieurs construction pour tester l'ajout de branches
         //processTraceroute(myTree,"campus.ece.fr");
         //processTraceroute(myTree,"www.facebook.com");
-        String feedback = "";
-
-        ////******EXECUTER A CHAQUE NOUVEL AJOUT : *************//////
-        //Feedback stock le statut de la construction des branches
-        if (processTraceroute(myTree, "fr.wikipedia.org")) //construction
-        //récup le feedback => voir la classe Tree
-        {
-            feedback = myTree.getSucess();
-        } else {
-            feedback = myTree.getStop();
-        }
-
-        //Créer le .png de notre graphe
-        processGraphviz(myTree.toString(), directory, input, output);
-
-       ///====> Rechargement de l'image affiché et du text feedback
-        /// ==> + vider le field contenant l'adresse tracé ?
-        ////*****FIN ******/////
-        //Construit les éléments de la fenêtre FX
-        Group group = new Group();
-        VBox vbox = new VBox();
-        Image myImage = new Image("file:usr/bin/monGraphe.png");
-
-        ImageView iv1 = new ImageView();
-        iv1.setImage(myImage);
-        iv1.setFitWidth(1024);
-        iv1.setFitHeight(700);
-        iv1.setPreserveRatio(true);
-        iv1.setSmooth(true);
-        iv1.setCache(true);
-
-        vbox.getChildren().add(new Text(feedback));
-        vbox.getChildren().add(iv1);
-        group.getChildren().add(vbox);
-        primaryStage.setScene(new Scene(group));
 
         primaryStage.setWidth(1024);
         primaryStage.setHeight(968);
         primaryStage.setTitle("TP1");
         primaryStage.sizeToScene();
         primaryStage.show();
+        ////*****FIN ******/////
+        vbox.getChildren().add(urlField);
+        Button addButton = new Button("Add IP");
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+                url = urlField.getText();
+                System.out.println(url);
+                //Feedback stock le statut de la construction des branches
+                if (processTraceroute(myTree, url)) //construction
+                //récup le feedback => voir la classe Tree
+                {
+                    feedback = myTree.getSucess();
+                } else {
+                    feedback = myTree.getStop();
+                }
+                //Créer le .png de notre graphe
+                processGraphviz(myTree.toString(), directory, input, output);
+                Image myImage = new Image("file:usr/bin/monGraphe.png");
+                iv1.setImage(myImage);
+                iv1.setFitWidth(1024);
+                iv1.setFitHeight(700);
+                iv1.setPreserveRatio(true);
+                iv1.setSmooth(true);
+                iv1.setCache(true);
+                vbox.getChildren().add(iv1);
+            }
+        });
+        vbox.getChildren().add(addButton);
+
+        Button clearButton = new Button("Clear IP");
+        clearButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+                url = "";
+                vbox.getChildren().remove(iv1);
+            }
+        });
+
+        vbox.getChildren().add(clearButton);
+        vbox.getChildren().add(new Text(feedback));
+        group.getChildren().add(vbox);
+        primaryStage.setScene(new Scene(group));
+
     }
 
     ///Renvoie true si le traceroute est allé jusqu'au bout, false s'il a renvoyé
@@ -103,17 +121,16 @@ public class TP1 extends Application {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {//If a match is find
                     //Register into the IP variable
-                    if (!line.startsWith("traceroute"))
-                    {
+                    if (!line.startsWith("traceroute")) {
                         ip = matcher.group();
-                    if (myTree.add(previous, ip)) {
+                        if (myTree.add(previous, ip)) {
                             previous = ip;
                         }
                     }
                 }
-                else {
-                    return false;
-                }
+                /*else {
+                 return false;
+                 }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
