@@ -16,11 +16,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.regex.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.layout.*;
 
 public class TP1 extends Application {
 
@@ -34,8 +36,10 @@ public class TP1 extends Application {
     private TextField urlField = new TextField();
     //Construit les éléments de la fenêtre FX
     private Group group = new Group();
+    private HBox hbox = new HBox();
     private VBox vbox = new VBox();
     private ImageView iv1 = new ImageView();
+    private GridPane grid = new GridPane();
 
     ////LANCEMENT DE LA FENETRE GRAPHIQUE
     @Override
@@ -46,13 +50,17 @@ public class TP1 extends Application {
         //processTraceroute(myTree,"campus.ece.fr");
         //processTraceroute(myTree,"www.facebook.com");
 
-        primaryStage.setWidth(1024);
-        primaryStage.setHeight(968);
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(800);
         primaryStage.setTitle("TP1");
         primaryStage.sizeToScene();
         primaryStage.show();
         ////*****FIN ******/////
-        vbox.getChildren().add(urlField);
+        //vbox.getChildren().add(urlField);
+        grid.add(urlField, 1, 0);
         Button addButton = new Button("Add IP");
         addButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -71,28 +79,25 @@ public class TP1 extends Application {
                 processGraphviz(myTree.toString(), directory, input, output);
                 Image myImage = new Image("file:usr/bin/monGraphe.png");
                 iv1.setImage(myImage);
-                iv1.setFitWidth(1024);
-                iv1.setFitHeight(700);
+                iv1.setFitWidth(600);
+                iv1.setFitHeight(600);
                 iv1.setPreserveRatio(true);
                 iv1.setSmooth(true);
                 iv1.setCache(true);
-                vbox.getChildren().add(iv1);
+                grid.add(iv1, 1, 1);
+                grid.add(new Text(feedback), 4, 0);
             }
         });
         vbox.getChildren().add(addButton);
-
+        grid.add(addButton, 2, 0);
         Button clearButton = new Button("Clear IP");
         clearButton.setOnAction(new EventHandler<ActionEvent>() {
-
             public void handle(ActionEvent event) {
                 url = "";
-                vbox.getChildren().remove(iv1);
             }
         });
-
-        vbox.getChildren().add(clearButton);
-        vbox.getChildren().add(new Text(feedback));
-        group.getChildren().add(vbox);
+        grid.add(clearButton, 3, 0);
+        group.getChildren().add(grid);
         primaryStage.setScene(new Scene(group));
 
     }
@@ -127,10 +132,9 @@ public class TP1 extends Application {
                             previous = ip;
                         }
                     }
+                } else {
+                    return false;
                 }
-                /*else {
-                 return false;
-                 }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
