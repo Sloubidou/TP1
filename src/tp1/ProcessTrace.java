@@ -61,17 +61,17 @@ public class ProcessTrace extends Thread {
                     } else {
                         if (graph.getNode(matcher.group()) == null) {
                             graph.addNode(matcher.group());
-                            for (Node node : graph) {
-                                node.addAttribute(matcher.group(), node.getId());
+                            for (Node n : graph.getEachNode()) {
+                                n.addAttribute(matcher.group(), n.getId());
                             }
                         }
                         if (graph.getNode(previous).getEdgeBetween(graph.getNode(matcher.group())) == null) {
                             graph.addEdge(previous + " to " + matcher.group(), previous, matcher.group(), true);
                         }
-                        previous = matcher.group();                            
+                        previous = matcher.group();
                         for (Node node : graph) {
-                        node.addAttribute(matcher.group(), node.getId());
-                            }
+                            node.addAttribute(matcher.group(), node.getId());
+                        }
                         if (destination.equals(matcher.group())) {
                             System.out.println("SUCCEED");
                             feedback = "Succeed !";
