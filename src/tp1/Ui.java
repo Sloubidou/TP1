@@ -32,7 +32,6 @@ public class Ui {
     private BorderLayout layout2 = new BorderLayout();
     private JLabel picLabel = new JLabel("PROCESS");
     private Graph graph = new SingleGraph("Tutorial 1");
-    private LinkedList<String> tab = new LinkedList<String>();
     private JPanel rPan = new JPanel();
     private JPanel lPan = new JPanel();
 
@@ -48,8 +47,8 @@ public class Ui {
                 ProcessTrace traceRoute = new ProcessTrace(url, graph);
                 traceRoute.start();
                 traceRoute.getFeedback();
-                rPan.add(feedback, layout.NORTH);
-                rPan.setVisible(true);
+                lPan.add(feedback, layout.SOUTH);
+                lPan.setVisible(true);
                 mainFrame.invalidate();
                 mainFrame.revalidate();
                 mainFrame.repaint();
