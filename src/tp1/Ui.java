@@ -25,9 +25,9 @@ public class Ui {
 
     //Les noms de dossier et fichier
     private JFrame mainFrame = new JFrame();
-    private JLabel feedback = new JLabel("Enter URLS");
+    private JLabel feedback = new JLabel("");
     private String url = "";
-    private JTextField urlField = new JTextField("google.com");
+    private JTextField urlField = new JTextField("Enter a URL");
     private BorderLayout layout = new BorderLayout();
     private BorderLayout layout2 = new BorderLayout();
     private JLabel picLabel = new JLabel("PROCESS");
@@ -37,7 +37,6 @@ public class Ui {
     private JPanel lPan = new JPanel();
 
     ////LANCEMENT DE LA FENETRE GRAPHIQUE
-
     public void Start() {
         urlField.setSize(50, 25);
         lPan.add(urlField, layout2.NORTH);
@@ -45,7 +44,6 @@ public class Ui {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 url = urlField.getText();
-                System.out.println(url);
                 //Feedback stock le statut de la construction des branches
                 ProcessTrace traceRoute = new ProcessTrace(url, graph);
                 traceRoute.start();
@@ -55,7 +53,7 @@ public class Ui {
                 mainFrame.invalidate();
                 mainFrame.revalidate();
                 mainFrame.repaint();
-                
+
             }
         });
         lPan.add(addButton, layout2.WEST);
@@ -63,6 +61,9 @@ public class Ui {
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 url = "";
+                for (Node n : graph.getEachNode()) {
+                    graph.removeNode(n);
+                }
             }
         });
         graph.display();

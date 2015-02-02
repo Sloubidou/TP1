@@ -50,7 +50,6 @@ public class ProcessTrace extends Thread {
             BufferedReader b = new BufferedReader(new InputStreamReader(myProcess.getInputStream()));
             //then print it !
             while ((line = b.readLine()) != null) {
-                System.out.println(previous);
                 System.out.println(line);
                 //Create a pattern for IPV4
                 String IPADDRESS_PATTERN = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
@@ -60,7 +59,6 @@ public class ProcessTrace extends Thread {
                 if (matcher.find()) {
                     if (line.contains(url)) {
                         destination = matcher.group();
-                        System.out.println(destination);
                     } else {
                         if (graph.getNode(matcher.group()) == null) {
                             graph.addNode(matcher.group()).addAttribute(matcher.group());
