@@ -63,7 +63,6 @@ public class TP1 extends Application {
         grid.add(urlField, 1, 0);
         Button addButton = new Button("Add IP");
         addButton.setOnAction(new EventHandler<ActionEvent>() {
-
             public void handle(ActionEvent event) {
                 url = urlField.getText();
                 System.out.println(url);
@@ -94,6 +93,8 @@ public class TP1 extends Application {
         clearButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 url = "";
+                myTree.getBranches().clear();
+                System.out.println(myTree.getBranches().get(0));
             }
         });
         grid.add(clearButton, 3, 0);
@@ -107,11 +108,12 @@ public class TP1 extends Application {
     public static boolean processTraceroute(Tree myTree, String url) {
         String line = "";
         String previous = myTree.getRoot();
-        String ip;
+        String ip="";
+        String destination="";
 
         try {
             //create the process
-            ProcessBuilder pBuilder = new ProcessBuilder("traceroute", url);
+            ProcessBuilder pBuilder = new ProcessBuilder("tracert", url);
             pBuilder.redirectErrorStream(true);//redirect the error stream
             Process myProcess = pBuilder.start(); //run the process
             //Get the output
@@ -124,22 +126,29 @@ public class TP1 extends Application {
                 Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
                 //Match the pattern and the string containing the IP
                 Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {//If a match is find
+                if (matcher.find()) {
+                //If a match is find
                     //Register into the IP variable
-                    if (!line.startsWith("traceroute")) {
+                    if (line.contains(url)) {
+                        destination = matcher.group();
+                    System.out.println(destination);}
+                    
+                    else{
                         ip = matcher.group();
                         if (myTree.add(previous, ip)) {
                             previous = ip;
                         }
+                        if(destination.equals(ip)){
+                            System.out.println("SUCCEED");
+                            return true;
+                        }
                     }
-                } else {
-                    return false;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     ///GENERE LE .png (output) A PARTIR DU FICHIER .dot passé en paramètre (input)
