@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 
@@ -33,53 +34,52 @@ public class ProcessTrace extends Thread {
     }
 
     public void run() {
+        Runtime rt = Runtime.getRuntime();
+        Process myProcess = null;
         String line = "";
         String destination = "";
-        String previous = "Start";
-        int j = 0;
-        if (graph.getNode(previous) == null) {
-            graph.addNode(previous);
+        ArrayList<String> previousIp = new ArrayList<String>();
+        previousIp.add("Start");
+        ArrayList<String> listIp = new ArrayList<String>();
+        if (graph.getNode("Start") == null) {
+            graph.addNode("Start").addAttribute("ui.label", "Start");
         }
         try {
             //create the process
-            ProcessBuilder pBuilder = new ProcessBuilder("tracert", url);
-            pBuilder.redirectErrorStream(true);//redirect the error stream
-            Process myProcess = pBuilder.start(); //run the process
+            myProcess = rt.exec("java -jar ./fakeroute.jar " + url);
             //Get the output
             BufferedReader b = new BufferedReader(new InputStreamReader(myProcess.getInputStream()));
             //then print it !
+            b.readLine();
             while ((line = b.readLine()) != null) {
                 System.out.println(line);
                 //Create a pattern for IPV4
-                String IPADDRESS_PATTERN = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+                String IPADDRESS_PATTERN = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
                 Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
                 //Match the pattern and the string containing the IP
                 Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    if (line.contains(url)) {
-                        destination = matcher.group();
-                    } else {
-                        if (graph.getNode(matcher.group()) == null) {
-                            graph.addNode(matcher.group());
-                            for (Node n : graph.getEachNode()) {
-                                n.addAttribute(matcher.group(), n.getId());
-                            }
-                        }
-                        if (graph.getNode(previous).getEdgeBetween(graph.getNode(matcher.group())) == null) {
-                            graph.addEdge(previous + " to " + matcher.group(), previous, matcher.group(), true);
-                        }
-                        previous = matcher.group();
-                        for (Node node : graph) {
-                            node.addAttribute(matcher.group(), node.getId());
-                        }
-                        if (destination.equals(matcher.group())) {
-                            System.out.println("SUCCEED");
-                            feedback = "Succeed !";
-                            previous = "Start";
+                while (matcher.find()) {
+                    listIp.add(matcher.group());
+                }
+                for (String s : listIp) {
+                    if (graph.getNode(s) == null) {
+                        graph.addNode(s).addAttribute("ui.label", s);
+                    }
+                    for (String previous : previousIp) {
+                        if (graph.getNode(previous).getEdgeBetween(graph.getNode(s)) == null) {
+                            graph.addEdge(previous + " to " + s, previous, s, true);
                         }
                     }
                 }
+                if (!listIp.isEmpty()) {
+                    System.out.println("Previous : " + previousIp);
+                    System.out.println("IP : " + listIp);
+                    previousIp.clear();
+                    previousIp.addAll(listIp);
+                    listIp.clear();
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

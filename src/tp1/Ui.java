@@ -27,7 +27,7 @@ public class Ui {
     private JFrame mainFrame = new JFrame();
     private JLabel feedback = new JLabel("");
     private String url = "";
-    private JTextField urlField = new JTextField("Enter a URL");
+    private JTextField urlField = new JTextField("22.22.22.22");
     private BorderLayout layout = new BorderLayout();
     private BorderLayout layout2 = new BorderLayout();
     private JLabel picLabel = new JLabel("PROCESS");
