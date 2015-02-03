@@ -37,7 +37,6 @@ public class ProcessTrace extends Thread {
         Runtime rt = Runtime.getRuntime();
         Process myProcess = null;
         String line = "";
-        String destination = "";
         ArrayList<String> previousIp = new ArrayList<String>();
         previousIp.add("Start");
         ArrayList<String> listIp = new ArrayList<String>();
@@ -67,7 +66,7 @@ public class ProcessTrace extends Thread {
                     }
                     for (String previous : previousIp) {
                         if (graph.getNode(previous).getEdgeBetween(graph.getNode(s)) == null) {
-                            graph.addEdge(previous + " to " + s, previous, s, true);
+                            graph.addEdge(previous + " to " + s, previous, s,true);
                         }
                     }
                 }
